@@ -1,3 +1,5 @@
+<%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
+
 <html>
     <%@ include file="/WEB-INF/jspf/header.jspf" %>
     <body>

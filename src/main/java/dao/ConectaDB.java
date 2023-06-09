@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import config.PropertiesLoad;
+
 public class ConectaDB {
-    private static final String URL = "jdbc:postgresql://localhost:5432/pooweb";
-    private static final String LOGIN = "postgres";
-    private static final String SENHA = "1234";
+    private static final String URL = "jdbc:postgresql://"+PropertiesLoad.loadProperties().getProperty("database");
+    private static final String LOGIN = PropertiesLoad.loadProperties().getProperty("userDatabase");
+    private static final String SENHA = PropertiesLoad.loadProperties().getProperty("dbPassword");
 
     public Connection getConnection2(){
         return getConnection();

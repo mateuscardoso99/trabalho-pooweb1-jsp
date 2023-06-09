@@ -23,7 +23,7 @@ public class AuthFilter implements Filter {
 
         if ((session.getAttribute("usuario") == null || session.getAttribute("logado") != "true") 
             && !req.getRequestURI().endsWith("login.jsp") && !req.getRequestURI().endsWith("register.jsp") && !req.getRequestURI().endsWith("index.jsp")) {
-                resp.sendRedirect("login.jsp");
+                resp.sendRedirect(req.getContextPath()+"/login.jsp");
         }
         else if((session.getAttribute("usuario") != null && session.getAttribute("logado") == "true")
             && (req.getRequestURI().endsWith("login.jsp") || req.getRequestURI().endsWith("register.jsp"))) {
