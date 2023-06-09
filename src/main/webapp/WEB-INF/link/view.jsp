@@ -15,10 +15,10 @@
               </tr>
             </thead>
             <tbody>
-                <c:forEach items="${contatos}" var="contato">
+                <c:forEach items="${links}" var="l">
                     <tr>
-                      <td>${contato.nome}</td>
-                      <td>${contato.telefone}</td>
+                      <td>${l.url}</td>
+                      <td>${l.descricao}</td>
                       <td>
                         <button type="button" class="btn btn-small btn-success">Editar</button>
                         <button type="button" class="btn btn-small btn-danger">Apagar</button>

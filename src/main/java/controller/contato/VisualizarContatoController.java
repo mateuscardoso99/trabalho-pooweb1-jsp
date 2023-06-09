@@ -1,5 +1,25 @@
 package controller.contato;
 
-public class VisualizarContatoController {
-    
+import java.io.IOException;
+import java.util.Collection;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import model.Contato;
+import service.ContatoService;
+
+@WebServlet("/user/contato/show")
+public class VisualizarContatoController extends HttpServlet {
+    private ContatoService contatoService;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Collection<Contato> contatos = contatoService.findAll(req);
+        req.setAttribute("contatos", contatos);
+        req.getRequestDispatcher("/WEB-INF/contato/view.jsp").forward(req, resp);
+    }
 }

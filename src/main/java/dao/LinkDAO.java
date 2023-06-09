@@ -8,39 +8,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import model.Contato;
+import model.Link;
 
-public class ContatoDAO {
+public class LinkDAO {
     private StringBuilder sql;
 
-    public List<Contato> findAll(Long idUsuario) throws SQLException{
-        List<Contato> contatos = new ArrayList<>();
+    public List<Link> findAll(Long idUsuario) throws SQLException{
+        List<Link> links = new ArrayList<>();
         sql = new StringBuilder();
-        sql.append("SELECT c.*, u.id as id_usuario FROM contato c, usuario u WHERE c.id_usuario = u.id AND u.id = ?;");
+        sql.append("SELECT l.*, u.id as id_usuario FROM link l, usuario u WHERE l.id_usuario = u.id AND u.id = ?;");
 
         PreparedStatement preparedStatement = ConectaDB.getConnection().prepareStatement(sql.toString());
         preparedStatement.setLong(1, idUsuario);
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while(resultSet.next()){
-            Contato c = new Contato();
-            c.setId(resultSet.getLong("id"));
-            c.setNome(resultSet.getString("nome"));
-            c.setTelefone(resultSet.getString("telefone"));
-            c.setFoto(resultSet.getString("foto"));
-            c.setIdUsuario(resultSet.getLong("id_usuario"));
-            contatos.add(c);
+            Link l = new Link();
+            l.setId(resultSet.getLong("id"));
+            l.setUrl(resultSet.getString("url"));
+            l.setDescricao(resultSet.getString("descricao"));
+            l.setIdUsuario(resultSet.getLong("id_usuario"));
+            links.add(l);
         }
         preparedStatement.close();
-        return contatos;
+        return links;
     }
 
-    public Optional<Contato> findById(Long id, Long idUsuario){
-        Contato contato = null;
+    public Optional<Link> findById(Long id, Long idUsuario){
+        Link link = null;
 
         try{
             sql = new StringBuilder();
-            sql.append("SELECT * FROM contato WHERE id = ? AND id_usuario = ?;");
+            sql.append("SELECT * FROM link WHERE id = ? AND id_usuario = ?;");
 
             PreparedStatement preparedStatement = ConectaDB.getConnection().prepareStatement(sql.toString());
             preparedStatement.setLong(1, id);
@@ -48,11 +47,10 @@ public class ContatoDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                contato = new Contato();
-                contato.setId(resultSet.getLong("id"));
-                contato.setNome(resultSet.getString("nome"));
-                contato.setTelefone(resultSet.getString("telefone"));
-                contato.setFoto(resultSet.getString("foto"));
+                link = new Link();
+                link.setId(resultSet.getLong("id"));
+                link.setUrl(resultSet.getString("url"));
+                link.setDescricao(resultSet.getString("descricao"));
             }
 
             preparedStatement.close();
@@ -60,19 +58,18 @@ public class ContatoDAO {
             e.printStackTrace();
         }
 
-        return Optional.of(contato);
+        return Optional.of(link);
     }
 
-    public boolean salvar(Contato contato){
+    public boolean salvar(Link link){
         try(Connection connection = new ConectaDB().getConnection2()){
             sql = new StringBuilder();
-            sql.append("INSERT INTO contato(nome,telefone,foto,id_usuario) VALUES(?,?,?,?);");
+            sql.append("INSERT INTO link(url,descricao,id_usuario) VALUES(?,?,?);");
 
             PreparedStatement ps = connection.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1, contato.getNome());
-            ps.setString(2, contato.getTelefone());
-            ps.setString(3, contato.getFoto());
-            ps.setLong(4, contato.getIdUsuario());
+            ps.setString(1, link.getUrl());
+            ps.setString(2, link.getDescricao());
+            ps.setLong(4, link.getIdUsuario());
             int result = ps.executeUpdate();
             ps.close();
 
@@ -86,13 +83,13 @@ public class ContatoDAO {
         }
     }
 
-    public boolean deletar(Long idContato){
+    public boolean deletar(Long idLink){
         try{
             sql = new StringBuilder();
-            sql.append("DELETE FROM contato WHERE id = ?;");
+            sql.append("DELETE FROM link WHERE id = ?;");
 
             PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
-            ps.setLong(1, idContato);
+            ps.setLong(1, idLink);
             int result = ps.executeUpdate();
             ps.close();
 
@@ -106,16 +103,15 @@ public class ContatoDAO {
         }
     }
 
-    public boolean atualizar(Contato contato){
+    public boolean atualizar(Link link){
         try{
             sql = new StringBuilder();
-            sql.append("UPDATE usuario SET nome = ?, telefone = ?, foto = ? WHERE id = ?;");
+            sql.append("UPDATE usuario SET url = ?, descricao = ? WHERE id = ?;");
 
             PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
-            ps.setString(1, contato.getNome());
-            ps.setString(2, contato.getTelefone());
-            ps.setString(3, contato.getFoto());
-            ps.setLong(4, contato.getId());
+            ps.setString(1, link.getUrl());
+            ps.setString(2, link.getDescricao());
+            ps.setLong(3, link.getId());
             int result = ps.executeUpdate();
             ps.close();
 
