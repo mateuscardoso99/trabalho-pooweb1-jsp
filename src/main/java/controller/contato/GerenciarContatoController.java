@@ -11,14 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import model.Contato;
 import service.ContatoService;
 
-@WebServlet("/user/gerenciar-contato")
+@WebServlet("/user/contato/gerenciar")
 public class GerenciarContatoController extends HttpServlet {
 
-    private ContatoService contatoService;
+    private ContatoService contatoService = new ContatoService();
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
+        String idContato = req.getParameter("idContato");
         String nome = req.getParameter("nome");
         String telefone = req.getParameter("telefone");
 
@@ -27,12 +28,11 @@ public class GerenciarContatoController extends HttpServlet {
             contatoService.salvar(req, contato);
         }
         else if(action.equals("editar")){
-            Contato contato = new Contato(nome, telefone);
+            Contato contato = new Contato(Long.valueOf(idContato), nome, telefone);
             contatoService.atualizar(req, contato);
         }
         else if(action.equals("apagar")){
-            Long idContato = Long.valueOf(req.getParameter("idContato"));
-            contatoService.deletar(req, idContato);
+            contatoService.deletar(req, Long.valueOf(idContato));
         }
         
         resp.sendRedirect(req.getContextPath()+"/user/contato/show");

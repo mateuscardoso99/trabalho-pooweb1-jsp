@@ -14,6 +14,12 @@ public class Contato {
         this.telefone = telefone;
     }
 
+    public Contato(Long id, String nome, String telefone) {
+        this.id = id;
+        this.nome = nome;
+        this.telefone = telefone;
+    }
+
     public Contato(Long id, String nome, String telefone, String foto, Long idUsuario) {
         this.id = id;
         this.nome = nome;

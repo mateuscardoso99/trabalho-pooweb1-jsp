@@ -12,10 +12,10 @@
                 <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/user">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="#">Perfil</a>
+                <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/user/perfil">Perfil</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/logout">Sair</a>
+                <a class="nav-link btn btn-dark text-light" href="${pageContext.request.contextPath}/logout">Sair</a>
               </li>
             </c:when>
             <c:otherwise>

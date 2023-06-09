@@ -109,7 +109,7 @@ public class ContatoDAO {
     public boolean atualizar(Contato contato){
         try{
             sql = new StringBuilder();
-            sql.append("UPDATE usuario SET nome = ?, telefone = ?, foto = ? WHERE id = ?;");
+            sql.append("UPDATE contato SET nome = ?, telefone = ?, foto = ? WHERE id = ?;");
 
             PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
             ps.setString(1, contato.getNome());

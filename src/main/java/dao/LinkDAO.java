@@ -69,7 +69,7 @@ public class LinkDAO {
             PreparedStatement ps = connection.prepareStatement(sql.toString(), PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, link.getUrl());
             ps.setString(2, link.getDescricao());
-            ps.setLong(4, link.getIdUsuario());
+            ps.setLong(3, link.getIdUsuario());
             int result = ps.executeUpdate();
             ps.close();
 
@@ -106,7 +106,7 @@ public class LinkDAO {
     public boolean atualizar(Link link){
         try{
             sql = new StringBuilder();
-            sql.append("UPDATE usuario SET url = ?, descricao = ? WHERE id = ?;");
+            sql.append("UPDATE link SET url = ?, descricao = ? WHERE id = ?;");
 
             PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
             ps.setString(1, link.getUrl());

@@ -6,10 +6,23 @@
     <body>
         <%@ include file="/WEB-INF/components/menu.jsp" %>
 
-        <form action="${pageContext.request.contextPath}/user/gerenciar-contato" method="post">
-            <input type="text" name="nome" id="nome" placeholder="nome">
-            <input type="tel" name="telefone" id="telefone" placeholder="telefone">
-            <button type="submit" name="action" value="cadastrar">Salvar contato</button>
-        </form>
+        <div class="container">
+
+            <form action="${pageContext.request.contextPath}/user/contato/gerenciar" method="post">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" name="nome" id="nome">
+                </div>
+                <div class="mb-3">
+                    <label for="telefone" class="form-label">Telefone</label>
+                    <input type="tel" class="form-control" name="telefone" id="telefone">
+                </div>
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Foto</label>
+                    <input type="file" class="form-control" name="foto" id="foto">
+                </div>
+                <button type="submit" name="action" class="btn btn-success" value="cadastrar">Salvar contato</button>
+            </form>
+        </div>
     </body>
 </html>

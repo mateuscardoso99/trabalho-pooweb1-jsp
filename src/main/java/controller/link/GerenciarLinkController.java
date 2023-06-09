@@ -11,13 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import model.Link;
 import service.LinkService;
 
-@WebServlet("/user/gerenciar-link")
+@WebServlet("/user/link/gerenciar")
 public class GerenciarLinkController extends HttpServlet {
-    private LinkService linkService;
+    private LinkService linkService = new LinkService();
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
+        String idLink = req.getParameter("idLink");
         String url = req.getParameter("url");
         String descricao = req.getParameter("descricao");
 
@@ -26,15 +27,14 @@ public class GerenciarLinkController extends HttpServlet {
             linkService.salvar(req, Link);
         }
         else if(action.equals("editar")){
-            Link Link = new Link(url, descricao);
+            Link Link = new Link(Long.valueOf(idLink), url, descricao);
             linkService.atualizar(req, Link);
         }
         else if(action.equals("apagar")){
-            Long idLink = Long.valueOf(req.getParameter("idLink"));
-            linkService.deletar(req, idLink);
+            linkService.deletar(req, Long.valueOf(idLink));
         }
         
-        resp.sendRedirect(req.getContextPath()+"/user/contato/show");
+        resp.sendRedirect(req.getContextPath()+"/user/link/show");
 
     }
 }

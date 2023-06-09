@@ -14,7 +14,7 @@ import service.LinkService;
 
 @WebServlet("/user/link/show")
 public class ViewLinkController extends HttpServlet{
-    private LinkService linkService;
+    private LinkService linkService = new LinkService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

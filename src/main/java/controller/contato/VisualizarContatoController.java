@@ -14,7 +14,7 @@ import service.ContatoService;
 
 @WebServlet("/user/contato/show")
 public class VisualizarContatoController extends HttpServlet {
-    private ContatoService contatoService;
+    private ContatoService contatoService = new ContatoService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

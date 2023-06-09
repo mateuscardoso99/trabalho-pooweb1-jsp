@@ -6,8 +6,10 @@
     <body>
         <%@ include file="/WEB-INF/components/menu.jsp" %>
 
-        <h1>olá ${sessionScope.usuario.nome}</h1>
-        <a href="${pageContext.request.contextPath}/user/add-contato">novo contato</a>
-        <a href="${pageContext.request.contextPath}/user/add-link">novo link</a>
+        <div class="container">
+            <h1>olá ${sessionScope.usuario.nome}</h1>
+            <a href="${pageContext.request.contextPath}/user/contato/show">contatos</a>
+            <a href="${pageContext.request.contextPath}/user/link/show">links</a>
+        </div>
     </body>
 </html>

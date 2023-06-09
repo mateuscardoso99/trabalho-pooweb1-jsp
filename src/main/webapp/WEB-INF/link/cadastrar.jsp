@@ -6,10 +6,18 @@
     <body>
         <%@ include file="/WEB-INF/components/menu.jsp" %>
 
-        <form action="${pageContext.request.contextPath}/user/gerenciar-link" method="post">
-            <textarea name="url" id="url" cols="30" rows="10"></textarea>
-            <textarea name="descricao" id="" cols="30" rows="10"></textarea>
-            <button type="submit" name="action" value="cadastrar">Salvar link</button>
-        </form>
+        <div class="container">
+            <form action="${pageContext.request.contextPath}/user/link/gerenciar" method="post">
+                <div class="mb-3">
+                    <label for="url" class="form-label">Nome</label>
+                    <input type="text" name="url" id="url" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea name="descricao" class="form-control" id="descricao" cols="30" rows="10"></textarea>
+                </div>
+                <button type="submit" name="action" class="btn btn-success" value="cadastrar">Salvar link</button>
+            </form>
+        </div>
     </body>
 </html>
