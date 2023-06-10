@@ -1,4 +1,4 @@
-package controller;
+package controller.perfil;
 
 import java.io.IOException;
 

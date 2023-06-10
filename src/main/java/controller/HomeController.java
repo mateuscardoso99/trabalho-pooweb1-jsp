@@ -15,6 +15,11 @@ import javax.servlet.http.HttpServletResponse;
  * (isto é, encaminha , não redireciona )
  */
 
+/**
+ * sessionScope estarão acessíveis a todas as solicitações na HttpSession atual. Esses atributos permanecem ativos enquanto a sessão estiver ativa
+ * requestScope estarão acessíveis apenas a partir da solicitação atual. Depois que a resposta é concluída ou é feito um redirect, eles desaparecem
+ */
+
 @WebServlet("/user")
 public class HomeController extends HttpServlet {
 

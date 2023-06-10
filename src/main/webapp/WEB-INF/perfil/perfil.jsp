@@ -7,17 +7,68 @@
         <%@ include file="/WEB-INF/components/menu.jsp" %>
 
         <div class="container">
-            <form action="${pageContext.request.contextPath}/user/perfil/salvar" method="post">
-                <div class="mb-3">
-                    <label for="nome" class="form-label">Nome</label>
-                    <input type="text" name="nome" id="nome" class="form-control" value="${sessionScope.usuario.nome}">
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" value="${sessionScope.usuario.email}">
-                </div>
-                <button type="submit" class="btn btn-success">Salvar</button>
-            </form>
+
+            <div class="row mb-3">
+                <c:if test="${not empty sessionScope.error}">
+                    <div class="alert alert-danger" role="alert">
+                        ${sessionScope.error}
+                    </div>
+                    <c:set var="error" scope="session" value=""></c:set>
+                </c:if>
+
+                <c:if test="${not empty sessionScope.success}">
+                    <div class="alert alert-success" role="alert">
+                        ${sessionScope.success}
+                    </div>
+                    <c:set var="success" scope="session" value=""></c:set>
+                </c:if>
+            </div>
+
+            <div class="row mb-3">
+                <form action="${pageContext.request.contextPath}/user/perfil/salvar" method="post">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" name="nome" id="nome" class="form-control" value="${sessionScope.usuario.nome}">
+                        <c:if test="${not empty sessionScope.validationErrors}">
+                            <c:forEach items="${sessionScope.validationErrors.nome}" var="error">
+                                <span class="text-danger">
+                                    ${error}
+                                </span>
+                            </c:forEach>
+                        </c:if>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" value="${sessionScope.usuario.email}">
+                        <c:if test="${not empty sessionScope.validationError}">
+                            <c:forEach items="${sessionScope.validationErrors.email}" var="error">
+                                <span class="text-danger">
+                                    ${error}
+                                </span>
+                            </c:forEach>
+                        </c:if>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Nova senha</label>
+                        <input type="password" name="password" id="password" autocomplete="off" class="form-control">
+                        <c:if test="${not empty sessionScope.validationErrors}">
+                            <c:forEach items="${sessionScope.validationErrors.senha}" var="error">
+                                <span class="text-danger">
+                                    ${error}
+                                </span>
+                            </c:forEach>
+                        </c:if>
+                    </div>
+                    <c:set var="validationErrors" scope="session" value=""></c:set>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </form>
+            </div>
+
+            <div class="row">
+                <form action="${pageContext.request.contextPath}/user/apagar-conta" method="post">
+                    <button type="submit" class="btn btn-danger">Apagar conta</button>
+                </form>
+            </div>
         </div>
     </body>
 </html>

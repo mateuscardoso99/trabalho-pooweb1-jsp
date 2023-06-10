@@ -11,6 +11,14 @@ public class Validator {
         return Pattern.compile(regexPattern).matcher(email).matches();
     }
     public static boolean isValidPassword(String password){
-        return password.length() > 4;
+        return password.length() >= 4;
+    }
+    public static boolean isNumber(String numero){
+        try{
+            Long.parseLong(numero);
+            return true;
+        }catch(NumberFormatException e){
+            return false;
+        }
     }
 }

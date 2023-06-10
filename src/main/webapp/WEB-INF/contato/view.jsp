@@ -24,7 +24,7 @@
                           <td>${contato.telefone}</td>
                           <td>
                             <button type="button" class="btn btn-sm btn-success" onclick="editar('${contato.id}','${contato.nome}','${contato.telefone}')">Editar</button>
-                            <button type="button" class="btn btn-sm btn-danger" onclick="apagar(${contato.id})">Apagar</button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="apagar('${contato.id}')">Apagar</button>
                           </td>
                         </tr>
                     </c:forEach>

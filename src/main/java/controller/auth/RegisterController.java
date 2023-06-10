@@ -1,6 +1,6 @@
-package controller;
+package controller.auth;
 
-import service.RegisterService;
+import service.UsuarioService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @WebServlet("/register")
 public class RegisterController extends HttpServlet {
-    private RegisterService registerService = new RegisterService();
+    private UsuarioService usuarioService = new UsuarioService();
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String nome = req.getParameter("nome");
@@ -23,12 +23,11 @@ public class RegisterController extends HttpServlet {
 
         Usuario u = new Usuario(nome, email, senha);
 
-        if(registerService.cadastrar(u, req)){
+        if(usuarioService.cadastrar(u, req)){
             req.getSession().setAttribute("success","conta criada com sucesso");
-            resp.sendRedirect("login.jsp");
+            resp.sendRedirect(req.getContextPath()+"/login");
         }
         else{
-            req.getSession().setAttribute("error","erro ao criar a conta");
             resp.sendRedirect("register.jsp");
         }    
     }

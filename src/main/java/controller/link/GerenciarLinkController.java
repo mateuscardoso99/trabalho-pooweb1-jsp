@@ -15,6 +15,7 @@ import service.LinkService;
 public class GerenciarLinkController extends HttpServlet {
     private LinkService linkService = new LinkService();
 
+    //método service responde tanto get como post
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
@@ -24,17 +25,32 @@ public class GerenciarLinkController extends HttpServlet {
 
         if(action.equals("cadastrar")){
             Link Link = new Link(url, descricao);
-            linkService.salvar(req, Link);
+
+            if(linkService.salvar(req, Link)){
+                req.getSession().setAttribute("success","link criado com sucesso");
+                resp.sendRedirect(req.getContextPath()+"/user/link/show");
+            }
+            else{
+                req.getRequestDispatcher("/WEB-INF/link/cadastrar.jsp").forward(req, resp);
+            }
         }
         else if(action.equals("editar")){
-            Link Link = new Link(Long.valueOf(idLink), url, descricao);
-            linkService.atualizar(req, Link);
-        }
-        else if(action.equals("apagar")){
-            linkService.deletar(req, Long.valueOf(idLink));
-        }
-        
-        resp.sendRedirect(req.getContextPath()+"/user/link/show");
+            Link link = new Link(url, descricao);
 
+            if(linkService.atualizar(req, link, idLink))
+                req.getSession().setAttribute("success","link atualizado com sucesso");
+            
+            resp.sendRedirect(req.getContextPath()+"/user/link/show");
+        }
+        else if(action.equals("apagar")){        
+            if(linkService.deletar(req, idLink))
+                req.getSession().setAttribute("success","link excluido com sucesso");
+            
+            resp.sendRedirect(req.getContextPath()+"/user/link/show");
+        }
+        else{
+            req.getSession().setAttribute("error", "ação inválida");
+            resp.sendRedirect(req.getContextPath()+"/user/link/show");
+        }
     }
 }

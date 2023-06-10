@@ -8,10 +8,10 @@ import java.util.Collection;
 
 public class UsuarioTeste {
     public static void main(String[] args) throws SQLException {
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        //UsuarioDAO usuarioDAO = new UsuarioDAO();
         //usuarioDAO.salvar(new Usuario("email@email","1234"));
 
-        Collection<Usuario> usuarios = usuarioDAO.findAll();
-        usuarios.stream().map(c -> c.getEmail()).forEach(System.out::println);
+        // Collection<Usuario> usuarios = usuarioDAO.findAll();
+        // usuarios.stream().map(c -> c.getEmail()).forEach(System.out::println);
     }
 }
