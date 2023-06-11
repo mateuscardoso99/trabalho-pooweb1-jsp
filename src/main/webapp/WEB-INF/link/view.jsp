@@ -59,6 +59,14 @@
               <a href="${pageContext.request.contextPath}/user/link/add">novo link</a>
             </div>
 
+            <div class="row mb-3">
+              <c:forEach items="${links}" var="l">
+                <div class="col-md-6 text-center">
+                  <iframe title="preview" src="${l.url}" id="iframe-${l.id}" width="300" height="200"></iframe>
+                </div>
+              </c:forEach>
+            </div>
+
             <div class="row">
               <table class="table">
                 <thead>
@@ -71,7 +79,7 @@
                 <tbody>
                     <c:forEach items="${links}" var="l">
                         <tr>
-                          <td>${l.url}</td>
+                          <td><a href="${l.url}" title="${l.descricao}">${l.url}</a></td>
                           <td>${l.descricao}</td>
                           <td>
                             <button type="button" class="btn btn-sm btn-success" onclick="editar('${l.id}','${l.url}','${l.descricao}')">Editar</button>
@@ -154,5 +162,9 @@
         var myModal = new bootstrap.Modal(document.getElementById('modalApagar'), {});
         document.getElementById("idLinkApagar").value = id;
         myModal.show()
+    }
+
+    function getHTML(url){
+      fetch(url).then(response => response.text)
     }
 </script>

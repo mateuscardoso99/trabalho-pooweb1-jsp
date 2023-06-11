@@ -30,11 +30,16 @@ public class LinkService {
         }
     }
 
-    public boolean salvar(HttpServletRequest req, Link link){
-        Map<String, List<String>> erros = validar(link);
+    public boolean salvar(HttpServletRequest req){
+        Map<String, List<String>> erros = validar(req);
 
         if(erros.isEmpty()){
+            String url = req.getParameter("url");
+            String descricao = req.getParameter("descricao");
+
             Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
+
+            Link link = new Link(url, descricao);
             link.setIdUsuario(u.getId());
 
             if(linkDAO.salvar(link))
@@ -45,22 +50,29 @@ public class LinkService {
         }
 
         req.setAttribute("validationErrors", erros);
-        return false;        
+        return false;
     }
 
-    public boolean atualizar(HttpServletRequest req, Link l, String idLink){
-        Map<String, List<String>> erros = validar(l);
+    public boolean atualizar(HttpServletRequest req){
+        Map<String, List<String>> erros = validar(req);
 
-        List<String> errosId = validateId(idLink);
+        List<String> errosId = validateId(req);
 
         if(!errosId.isEmpty())
             erros.put("id", errosId);
 
         if(erros.isEmpty()){
+            Long id = Long.parseLong(req.getParameter("idLink"));
+            String url = req.getParameter("url");
+            String descricao = req.getParameter("descricao");
+
             Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
-            Optional<Link> findLink = linkDAO.findById(l.getId(), u.getId());
+            Link link = new Link(id, url, descricao);
+
+            Optional<Link> findLink = linkDAO.findById(link.getId(), u.getId());
+
             if(findLink.isPresent()){
-                if(linkDAO.atualizar(l))
+                if(linkDAO.atualizar(link))
                     return true;
 
                 req.getSession().setAttribute("error", "erro ao salvar link");
@@ -71,19 +83,22 @@ public class LinkService {
         return false;
     }
 
-    public boolean deletar(HttpServletRequest request, String idLink){
+    public boolean deletar(HttpServletRequest request){
         Map<String, List<String>> erros = new HashMap<>();
 
-        List<String> errosId = validateId(idLink);
+        List<String> errosId = validateId(request);
 
         if(!errosId.isEmpty())
             erros.put("id", errosId);
 
-        if(erros.isEmpty()){  
+        if(erros.isEmpty()){
+            Long id = Long.valueOf(request.getParameter("idLink"));
+
             Usuario u = BuscarUsuarioLogado.getUsuarioLogado(request);
-            Optional<Link> link = linkDAO.findById(Long.valueOf(idLink), u.getId());
+            Optional<Link> link = linkDAO.findById(id, u.getId());
+
             if(link.isPresent()){
-                if(linkDAO.deletar(Long.valueOf(idLink)))
+                if(linkDAO.deletar(Long.valueOf(id)))
                     return true;
 
                 request.getSession().setAttribute("error", "erro ao apagar o link");
@@ -96,24 +111,29 @@ public class LinkService {
         return false;
     }
 
-    private Map<String, List<String>> validar(Link l){
+    private Map<String, List<String>> validar(HttpServletRequest req){
         Map<String, List<String>> erros = new HashMap<>();
 
-        if(Validator.isEmptyOrNull(l.getDescricao())){
+        String url = req.getParameter("url");
+        String descricao = req.getParameter("descricao");
+
+        if(Validator.isEmptyOrNull(descricao)){
             erros.put("descricao",Arrays.asList("descrição inválida"));
         }
-        if(Validator.isEmptyOrNull(l.getUrl())){
+        if(Validator.isEmptyOrNull(url)){
             erros.put("url",Arrays.asList("URL inválida"));
         }
         
         return erros;
     }
 
-    private List<String> validateId(String id){
+    private List<String> validateId(HttpServletRequest req){
         List<String> erros = new ArrayList<>();
 
+        String id = req.getParameter("idLink");
+
         if(Validator.isEmptyOrNull(id)){
-            erros.add("link inválido");
+            erros.add("informe o id do link");
         }
         if(!Validator.isNumber(id)){
             erros.add("id inválido");

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Contato;
 import service.ContatoService;
 
 @WebServlet("/user/contato/gerenciar")
@@ -19,24 +18,32 @@ public class GerenciarContatoController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        String idContato = req.getParameter("idContato");
-        String nome = req.getParameter("nome");
-        String telefone = req.getParameter("telefone");
 
         if(action.equals("cadastrar")){
-            Contato contato = new Contato(nome, telefone);
-            contatoService.salvar(req, contato);
+            if(contatoService.salvar(req)){
+                req.getSession().setAttribute("success","contato criado com sucesso");
+                resp.sendRedirect(req.getContextPath()+"/user/contato/show");
+            }
+            else{
+                req.getRequestDispatcher("/WEB-INF/contato/cadastrar.jsp").forward(req, resp);
+            }
         }
         else if(action.equals("editar")){
-            Contato contato = new Contato(Long.valueOf(idContato), nome, telefone);
-            contatoService.atualizar(req, contato);
+            if(contatoService.atualizar(req))
+                req.getSession().setAttribute("success","contato atualizado com sucesso");
+            
+            resp.sendRedirect(req.getContextPath()+"/user/contato/show");
         }
         else if(action.equals("apagar")){
-            contatoService.deletar(req, Long.valueOf(idContato));
+            if(contatoService.deletar(req))
+                req.getSession().setAttribute("success","contato excluido com sucesso");
+            
+            resp.sendRedirect(req.getContextPath()+"/user/contato/show");
         }
-        
-        resp.sendRedirect(req.getContextPath()+"/user/contato/show");
-
+        else{
+            req.getSession().setAttribute("error", "ação inválida");
+            resp.sendRedirect(req.getContextPath()+"/user/contato/show");
+        }
     }
     
 }

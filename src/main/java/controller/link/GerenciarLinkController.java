@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Link;
 import service.LinkService;
 
 @WebServlet("/user/link/gerenciar")
@@ -19,14 +18,9 @@ public class GerenciarLinkController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        String idLink = req.getParameter("idLink");
-        String url = req.getParameter("url");
-        String descricao = req.getParameter("descricao");
 
         if(action.equals("cadastrar")){
-            Link Link = new Link(url, descricao);
-
-            if(linkService.salvar(req, Link)){
+            if(linkService.salvar(req)){
                 req.getSession().setAttribute("success","link criado com sucesso");
                 resp.sendRedirect(req.getContextPath()+"/user/link/show");
             }
@@ -35,15 +29,13 @@ public class GerenciarLinkController extends HttpServlet {
             }
         }
         else if(action.equals("editar")){
-            Link link = new Link(url, descricao);
-
-            if(linkService.atualizar(req, link, idLink))
+            if(linkService.atualizar(req))
                 req.getSession().setAttribute("success","link atualizado com sucesso");
             
             resp.sendRedirect(req.getContextPath()+"/user/link/show");
         }
         else if(action.equals("apagar")){        
-            if(linkService.deletar(req, idLink))
+            if(linkService.deletar(req))
                 req.getSession().setAttribute("success","link excluido com sucesso");
             
             resp.sendRedirect(req.getContextPath()+"/user/link/show");
