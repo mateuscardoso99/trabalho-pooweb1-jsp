@@ -4,9 +4,6 @@
     <%@ include file="/WEB-INF/jspf/header.jspf" %>
     <body>
         <%@ include file="/WEB-INF/components/menu.jsp" %>
-        <div class="container">
-            <a href="login.jsp">login</a>
-            <a href="register.jsp">criar conta</a>
-        </div>
+        <%@ include file="/WEB-INF/components/footer.jsp" %>
     </body>
 </html>

@@ -7,9 +7,18 @@
         <%@ include file="/WEB-INF/components/menu.jsp" %>
 
         <div class="container">
-            <h1>olá ${sessionScope.usuario.nome}</h1>
-            <a href="${pageContext.request.contextPath}/user/contato/show">contatos</a>
-            <a href="${pageContext.request.contextPath}/user/link/show">links</a>
+            <div class="row mb-3">
+                <div class="col-3">
+                    <a class="btn btn-danger" href="${pageContext.request.contextPath}/user/contato/show">contatos</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <a class="btn btn-danger" href="${pageContext.request.contextPath}/user/link/show">links</a>
+                </div>
+            </div>
         </div>
+
+        <%@ include file="/WEB-INF/components/footer.jsp" %>
     </body>
 </html>

@@ -1,7 +1,6 @@
 package service;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
@@ -61,6 +59,7 @@ public class ContatoService {
                     String hashFileName = generateHashFilename();
                     String fileName = hashFileName + getSubmittedFileName(file); 
 
+                    //cria diretorio
                     if(!uploadDir.exists())
                         uploadDir.mkdir();
 
@@ -78,14 +77,9 @@ public class ContatoService {
 
             req.setAttribute("validationErrors", erros);
             return false;
-        }catch(IOException ex){
-            ex.printStackTrace();
-            return false;
-        }catch(ServletException ex){
-            ex.printStackTrace();
-            return false;
         }catch(Exception ex){
             ex.printStackTrace();
+            req.setAttribute("error", "erro ao salvar contato");
             return false;
         }
     }

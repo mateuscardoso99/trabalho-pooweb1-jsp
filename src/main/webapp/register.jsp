@@ -17,7 +17,7 @@
 
         <div class="row mt-3">
             <form action="register" method="post">
-                <h1 class="text-center bg-light text-dark">criar conta</h1>
+                <h2 class="text-center bg-light text-dark">criar conta</h2>
     
                 <div class="mb-3">
                     <label for="nome" class="form-label">Nome</label>
@@ -56,7 +56,8 @@
                 <button type="submit" class="btn btn-primary">salvar</button>
             </form>
         </div>
-
     </div>
+
+    <%@ include file="/WEB-INF/components/footer.jsp" %>
 </body>
 </html>

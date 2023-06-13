@@ -9,7 +9,7 @@
           <c:choose>
             <c:when test="${sessionScope.logado != '' && sessionScope.logado == 'true'}">
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/user">Home</a>
+                <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/user">${sessionScope.usuario.nome}</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/user/perfil">Perfil</a>

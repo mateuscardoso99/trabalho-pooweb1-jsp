@@ -56,34 +56,42 @@
             <c:set var="validationErrors" scope="session" value=""></c:set>
 
             <div class="row m-3">
-              <div class="col">
+              <div class="col text-center">
                 <a class="btn btn-primary" href="${pageContext.request.contextPath}/user/contato/add">novo contato</a>
               </div>
             </div>
 
             <div class="row">
-              <c:forEach items="${contatos}" var="contato">
-                <div class="col-md-4 mb-3">
-                  <div class="card m-auto" style="width: 18rem;">
-                    <c:choose>
-                      <c:when test="${not empty contato.foto}">
-                        <img src="${pageContext.request.contextPath}/fotos_contato?name=${contato.foto}" height="190px" alt="${contato.nome}">
-                      </c:when>
-                      <c:otherwise>
-                        <img src="https://placehold.co/600x400/png" alt="${contato.nome}">
-                      </c:otherwise>
-                    </c:choose>                    
-                    <div class="card-body">
-                      <h5 class="card-title">${contato.nome}</h5>
-                      <span class="badge text-light bg-primary">${contato.telefone}</span>
+              <c:choose>
+                <c:when test="${contatos.size() > 0}">
+                  <c:forEach items="${contatos}" var="contato">
+                    <div class="col-md-4 mb-3">
+                      <div class="card m-auto" style="width: 18rem;">
+                        <c:choose>
+                          <c:when test="${not empty contato.foto}">
+                            <img src="${pageContext.request.contextPath}/fotos_contato?name=${contato.foto}" height="190px" alt="${contato.nome}">
+                          </c:when>
+                          <c:otherwise>
+                            <img src="https://placehold.co/600x400/png" alt="${contato.nome}">
+                          </c:otherwise>
+                        </c:choose>                    
+                        <div class="card-body">
+                          <h5 class="card-title">${contato.nome}</h5>
+                          <span class="badge text-light bg-primary">${contato.telefone}</span>
+                        </div>
+                        <div class="card-footer text-muted">
+                          <button type="button" class="btn btn-sm btn-warning" onclick="editar('${contato.id}','${contato.nome}','${contato.telefone}')">Editar</button>
+                          <button type="button" class="btn btn-sm btn-danger" onclick="apagar('${contato.id}')">Apagar</button>
+                        </div>
+                      </div>
                     </div>
-                    <div class="card-footer text-muted">
-                      <button type="button" class="btn btn-sm btn-warning" onclick="editar('${contato.id}','${contato.nome}','${contato.telefone}')">Editar</button>
-                      <button type="button" class="btn btn-sm btn-danger" onclick="apagar('${contato.id}')">Apagar</button>
-                    </div>
-                  </div>
-                </div>
-              </c:forEach>
+                  </c:forEach>
+                </c:when>
+                <c:otherwise>
+                  <p class="text-danger fw-bold text-center">Nenhum contato cadastrado</p>
+                </c:otherwise>
+              </c:choose>
+              
             </div>
 
             <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -140,7 +148,7 @@
             </div>            
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <%@ include file="/WEB-INF/components/footer.jsp" %>
     </body>
 </html>
 

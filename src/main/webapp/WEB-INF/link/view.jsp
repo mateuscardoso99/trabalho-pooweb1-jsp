@@ -56,7 +56,7 @@
             <c:set var="validationErrors" scope="session" value=""></c:set>
 
             <div class="row m-3">
-              <div class="col">
+              <div class="col text-center">
                 <a class="btn btn-primary" href="${pageContext.request.contextPath}/user/link/add">novo link</a>
               </div>
             </div>
@@ -70,25 +70,32 @@
             </div>
 
             <div class="row">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">URL</th>
-                    <th scope="col">Opções</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <c:forEach items="${links}" var="l">
-                        <tr>
-                          <td><a href="${l.url}" title="${l.descricao}">${l.url}</a></td>
-                          <td>
-                            <button type="button" class="btn btn-sm btn-warning" onclick="editar('${l.id}','${l.url}','${l.descricao}')">Editar</button>
-                            <button type="button" class="btn btn-sm btn-danger" onclick="apagar('${l.id}')">Apagar</button>
-                          </td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-              </table>
+              <c:choose>
+                <c:when test="${links.size() > 0}">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">URL</th>
+                        <th scope="col">Opções</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${links}" var="l">
+                            <tr>
+                              <td><a href="${l.url}" title="${l.descricao}">${l.url}</a></td>
+                              <td>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="editar('${l.id}','${l.url}','${l.descricao}')">Editar</button>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="apagar('${l.id}')">Apagar</button>
+                              </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                  </table>
+                </c:when>
+                <c:otherwise>
+                  <p class="text-danger fw-bold text-center">Nenhum link cadastrado</p>
+                </c:otherwise>
+              </c:choose>
             </div>
 
             <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -145,7 +152,7 @@
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <%@ include file="/WEB-INF/components/footer.jsp" %>
     </body>
 </html>
 

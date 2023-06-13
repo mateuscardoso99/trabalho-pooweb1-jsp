@@ -21,33 +21,36 @@
                 <c:set var="success" scope="session" value=""></c:set>
             </c:if>
 
-            <form action="login" method="post">
-                <h2>login</h2>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" class="form-control" name="email" id="email">
-                    <c:if test="${not empty requestScope.validationErrors}">
-                        <c:forEach items="${requestScope.validationErrors.email}" var="error">
-                            <span class="text-danger">
-                                ${error}
-                            </span>
-                        </c:forEach>
-                    </c:if>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Senha</label>
-                    <input type="password" class="form-control" name="password" id="password">
-                    <c:if test="${not empty requestScope.validationErrors}">
-                        <c:forEach items="${requestScope.validationErrors.senha}" var="error">
-                            <span class="text-danger">
-                                ${error}
-                            </span>
-                        </c:forEach>
-                    </c:if>
-                </div>
-                <c:set var="validationErrors" scope="request" value=""></c:set>
-                <button type="submit" class="btn btn-primary">Entrar</button>
-            </form>
+            <div class="row mt-3">
+                <form action="login" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text" class="form-control" name="email" id="email">
+                        <c:if test="${not empty requestScope.validationErrors}">
+                            <c:forEach items="${requestScope.validationErrors.email}" var="error">
+                                <span class="text-danger">
+                                    ${error}
+                                </span>
+                            </c:forEach>
+                        </c:if>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Senha</label>
+                        <input type="password" class="form-control" name="password" id="password">
+                        <c:if test="${not empty requestScope.validationErrors}">
+                            <c:forEach items="${requestScope.validationErrors.senha}" var="error">
+                                <span class="text-danger">
+                                    ${error}
+                                </span>
+                            </c:forEach>
+                        </c:if>
+                    </div>
+                    <c:set var="validationErrors" scope="request" value=""></c:set>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+            </div>
         </div>
+
+        <%@ include file="/WEB-INF/components/footer.jsp" %>
     </body>
 </html>
