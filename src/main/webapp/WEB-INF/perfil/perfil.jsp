@@ -64,11 +64,34 @@
                 </form>
             </div>
 
-            <div class="row">
-                <form action="${pageContext.request.contextPath}/user/apagar-conta" method="post">
-                    <button type="submit" class="btn btn-danger">Apagar conta</button>
-                </form>
+            <div class="row mt-5">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    APAGAR CONTA
+                </button>
+            </div>
+
+            <!--APAGAR CONTA-->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Apagar conta</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Deseja apagar a conta, todos os seus dados serão excluídos
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form action="${pageContext.request.contextPath}/user/apagar-conta" method="post">
+                                <button type="submit" class="btn btn-danger">Apagar conta</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

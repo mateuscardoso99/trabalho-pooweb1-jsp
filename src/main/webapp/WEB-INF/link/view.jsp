@@ -55,14 +55,16 @@
 
             <c:set var="validationErrors" scope="session" value=""></c:set>
 
-            <div class="row mb-3">
-              <a href="${pageContext.request.contextPath}/user/link/add">novo link</a>
+            <div class="row m-3">
+              <div class="col">
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/user/link/add">novo link</a>
+              </div>
             </div>
 
             <div class="row mb-3">
               <c:forEach items="${links}" var="l">
-                <div class="col-md-6 text-center">
-                  <iframe title="preview" src="${l.url}" id="iframe-${l.id}" width="300" height="200"></iframe>
+                <div class="col-md-6 text-center mb-3">
+                  <iframe title="preview" src="${l.url}" id="iframe-${l.id}" width="100%" height="200"></iframe>
                 </div>
               </c:forEach>
             </div>
@@ -72,7 +74,6 @@
                 <thead>
                   <tr>
                     <th scope="col">URL</th>
-                    <th scope="col">Descrição</th>
                     <th scope="col">Opções</th>
                   </tr>
                 </thead>
@@ -80,9 +81,8 @@
                     <c:forEach items="${links}" var="l">
                         <tr>
                           <td><a href="${l.url}" title="${l.descricao}">${l.url}</a></td>
-                          <td>${l.descricao}</td>
                           <td>
-                            <button type="button" class="btn btn-sm btn-success" onclick="editar('${l.id}','${l.url}','${l.descricao}')">Editar</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="editar('${l.id}','${l.url}','${l.descricao}')">Editar</button>
                             <button type="button" class="btn btn-sm btn-danger" onclick="apagar('${l.id}')">Apagar</button>
                           </td>
                         </tr>
@@ -162,9 +162,5 @@
         var myModal = new bootstrap.Modal(document.getElementById('modalApagar'), {});
         document.getElementById("idLinkApagar").value = id;
         myModal.show()
-    }
-
-    function getHTML(url){
-      fetch(url).then(response => response.text)
     }
 </script>

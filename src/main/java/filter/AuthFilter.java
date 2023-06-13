@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns =  {"/user/*", "/login", "/register.jsp"})
+@WebFilter(urlPatterns =  {"/user/*", "/login", "/register.jsp", "/fotos_contato/*"})
 public class AuthFilter implements Filter {
 
     @Override
@@ -22,11 +22,14 @@ public class AuthFilter implements Filter {
         HttpSession session = req.getSession();
 
         if ((session.getAttribute("usuario") == null || session.getAttribute("logado") != "true") 
-            && !req.getRequestURI().endsWith("login") && !req.getRequestURI().endsWith("register.jsp") && !req.getRequestURI().endsWith("index.jsp")) {
+            && !req.getRequestURI().endsWith("login") 
+            && !req.getRequestURI().endsWith("register.jsp") 
+            && !req.getRequestURI().endsWith("index.jsp")) {
                 resp.sendRedirect(req.getContextPath()+"/login");
         }
         else if((session.getAttribute("usuario") != null && session.getAttribute("logado") == "true")
-            && (req.getRequestURI().endsWith("login") || req.getRequestURI().endsWith("register.jsp"))) {
+            && (req.getRequestURI().endsWith("login") 
+            || req.getRequestURI().endsWith("register.jsp"))) {
                 resp.sendRedirect(req.getContextPath()+"/user");
         }
         else {

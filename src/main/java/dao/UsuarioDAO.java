@@ -1,5 +1,7 @@
 package dao;
 
+import model.Contato;
+import model.Link;
 import model.Usuario;
 import utils.Validator;
 
@@ -7,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UsuarioDAO {
@@ -136,4 +140,44 @@ public class UsuarioDAO {
         }
     }
 
+    public Usuario getDadosUsuario(Usuario u){
+        sql = new StringBuilder();
+        sql.append("SELECT c.id AS cid, c.*, l.id AS lid, l.* FROM contato c JOIN usuario u on c.id_usuario = u.id JOIN link l on u.id = l.id_usuario WHERE u.id = ?");
+
+        try(Connection conn = new ConectaDB().getConnection2()){
+
+            List<Contato> contatosUsuario = new ArrayList<>();
+            List<Link> linksUsuario = new ArrayList<>();
+
+            PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
+            ps.setLong(1, u.getId());
+            ResultSet resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                Contato c = new Contato(
+                    resultSet.getLong("cid"), 
+                    resultSet.getString("telefone"),
+                    resultSet.getString("nome"), 
+                    resultSet.getString("foto"),
+                    resultSet.getLong("id_usuario")
+                );
+                Link l = new Link(
+                    resultSet.getLong("lid"), 
+                    resultSet.getString("url"),
+                    resultSet.getString("descricao"),
+                    resultSet.getLong("id_usuario")
+                );
+                contatosUsuario.add(c);
+                linksUsuario.add(l);
+            }
+
+            u.setContatos(contatosUsuario);
+            u.setLinks(linksUsuario);
+            
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return u;
+    }
 }

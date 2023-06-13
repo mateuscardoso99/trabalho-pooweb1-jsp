@@ -1,5 +1,6 @@
 package service;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,9 @@ public class UsuarioService {
 
             if(findUsuario.isPresent()){
                 if(new BCryptPasswordEncoder().matches(u.getSenha(), findUsuario.get().getSenha())){
-                    session.setAttribute("usuario", findUsuario.get());
+                    Usuario usuario = findUsuario.get();
+                    usuarioDAO.getDadosUsuario(usuario);
+                    session.setAttribute("usuario", usuario);
                     session.setAttribute("logado","true");
                     return true;
                 }
@@ -65,13 +68,16 @@ public class UsuarioService {
     }
 
     public boolean atualizar(HttpServletRequest req, Usuario usuarioUpdate){
-        Map<String,List<String>> errors = validar(usuarioUpdate,true, false);
+        //se usuario enviou a senha na request então ele quer alterar a senha
+        Boolean verificarSenha = (usuarioUpdate.getSenha() != "") ? true : false;
+
+        Map<String,List<String>> errors = validar(usuarioUpdate,true, verificarSenha);
 
         if (errors.isEmpty()) {
             Usuario usuarioLogado = BuscarUsuarioLogado.getUsuarioLogado(req);
             usuarioUpdate.setId(usuarioLogado.getId());
 
-            if(!Validator.isEmptyOrNull(usuarioUpdate.getSenha()))  
+            if(!Validator.isEmptyOrNull(usuarioUpdate.getSenha()))
                 usuarioUpdate.setSenha(new BCryptPasswordEncoder().encode(usuarioUpdate.getSenha()));
 
             if(usuarioDAO.atualizar(usuarioUpdate))
@@ -89,6 +95,15 @@ public class UsuarioService {
     public boolean apagarConta(HttpServletRequest req){
         Usuario usuarioLogado = BuscarUsuarioLogado.getUsuarioLogado(req);
         try{
+            usuarioDAO.getDadosUsuario(usuarioLogado);
+
+            String relativePath = req.getServletContext().getRealPath("");
+
+            usuarioLogado.getContatos().stream().forEach(c -> {
+                File f = new File(relativePath+"/fotos_contato/"+c.getFoto());
+                f.delete();
+            });
+
             return usuarioDAO.deletar(usuarioLogado);
         }catch(SQLException e){
             e.printStackTrace();

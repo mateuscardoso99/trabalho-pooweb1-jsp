@@ -3,6 +3,7 @@ package controller.contato;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import service.ContatoService;
 
 @WebServlet("/user/contato/gerenciar")
+@MultipartConfig(
+    maxFileSize = 1024 * 1024 * 10,
+    maxRequestSize = 1024 * 1024 * 5 * 5
+)
 public class GerenciarContatoController extends HttpServlet {
 
     private ContatoService contatoService = new ContatoService();

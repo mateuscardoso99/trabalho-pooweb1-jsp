@@ -11,7 +11,7 @@ create table contato(
 	telefone varchar(20) not null,
 	foto varchar(255),
 	id_usuario int not null,
-	foreign key(id_usuario) references usuario(id)
+	foreign key(id_usuario) references usuario(id) on delete cascade
 );
 
 create table link(
@@ -19,7 +19,7 @@ create table link(
 	url text not null,
 	descricao text,
 	id_usuario int not null,
-	foreign key(id_usuario) references usuario(id)
+	foreign key(id_usuario) references usuario(id) on delete cascade
 );
 
 create table documento(
@@ -27,5 +27,5 @@ create table documento(
 	arquivo varchar(255) not null,
 	id_usuario int not null,
 	tipo_arquivo varchar(50) not null,
-	foreign key(id_usuario) references usuario(id)
+	foreign key(id_usuario) references usuario(id) on delete cascade
 );

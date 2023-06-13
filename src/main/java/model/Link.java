@@ -19,6 +19,13 @@ public class Link {
         this.descricao = descricao;
     }
 
+    public Link(Long id, String url, String descricao, Long idUsuario) {
+        this.id = id;
+        this.url = url;
+        this.descricao = descricao;
+        this.idUsuario = idUsuario;
+    }
+
     public Long getId() {
         return id;
     }

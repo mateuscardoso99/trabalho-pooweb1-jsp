@@ -17,7 +17,7 @@
             </div>
 
             <div class="row">
-                <form action="${pageContext.request.contextPath}/user/contato/gerenciar" method="post">
+                <form action="${pageContext.request.contextPath}/user/contato/gerenciar" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="nome" class="form-label">Nome</label>
                         <input type="text" class="form-control" name="nome" id="nome">

@@ -1,10 +1,14 @@
 package model;
 
+import java.util.Collection;
+
 public class Usuario {
     private Long id;
     private String nome;
     private String email;
     private String senha;
+    private Collection<Contato> contatos;
+    private Collection<Link> links;
 
     public Usuario(){}
 
@@ -57,4 +61,21 @@ public class Usuario {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
+    public Collection<Contato> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(Collection<Contato> contatos) {
+        this.contatos = contatos;
+    }
+
+    public Collection<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(Collection<Link> links) {
+        this.links = links;
+    }
+    
 }
