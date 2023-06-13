@@ -41,7 +41,13 @@ public class ViewFotoController extends HttpServlet{
         //FileInputStream destina-se à leitura de fluxos de bytes brutos, como dados de imagem
         FileInputStream fileInputStream = new FileInputStream(file);
         
+        //busca mime type do arquivo
         String mimeType = getServletContext().getMimeType(relativePath+"/fotos_contato/"+req.getParameter("name"));
+
+        // se Content-Disposition tiver attachment faz o navegador baixar o arquivo e não só mostrar
+        // String headerKey = "Content-Disposition";
+        // String headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
+        // response.setHeader(headerKey, headerValue);
 
         resp.setContentType(mimeType);
         resp.setContentLength((int)file.length());
