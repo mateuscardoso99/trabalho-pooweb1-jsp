@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class Validator {
     public static boolean isEmptyOrNull(String input){
-        return input == null || input == "";
+        return input == null || input.equals("");
     }
     public static boolean isEmail(String email){
         String regexPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";

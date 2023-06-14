@@ -1,6 +1,7 @@
 package service;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
@@ -38,7 +40,8 @@ public class ContatoService {
 
     public boolean salvar(HttpServletRequest req){
         try{
-            Map<String, List<String>> erros = validar(req);
+            boolean validarArquivo = (req.getPart("foto").getSize() > 0) ? true : false;
+            Map<String, List<String>> erros = validar(req, validarArquivo);
 
             if(erros.isEmpty()){
                 String nome = req.getParameter("nome");
@@ -52,13 +55,6 @@ public class ContatoService {
                 //upload foto
                 if(req.getPart("foto").getSize() > 0){
                     Part file = req.getPart("foto");
-                    String extensao = Validator.getFileExtension(getSubmittedFileName(file));
-
-                    if(extensao == "" || (!extensao.equals(".png") && !extensao.equals(".jpg") && !extensao.equals(".jpeg"))){
-                        erros.put("foto", Arrays.asList("arquivo inválido"));
-                        req.setAttribute("validationErrors", erros);
-                        return false;
-                    }
 
                     String uploadPath = req.getServletContext().getRealPath("") + File.separator + PropertiesLoad.loadProperties().getProperty("fotos_folder");
                     File uploadDir = new File(uploadPath);
@@ -92,33 +88,39 @@ public class ContatoService {
     }
 
     public boolean atualizar(HttpServletRequest req){
-        Map<String, List<String>> erros = validar(req);
+        try{
+            Map<String, List<String>> erros = validar(req,false);
 
-        List<String> errosId = validateId(req);
+            List<String> errosId = validateId(req);
 
-        if(!errosId.isEmpty())
-            erros.put("id", errosId);
+            if(!errosId.isEmpty())
+                erros.put("id", errosId);
 
-        if(erros.isEmpty()){
-            Long id = Long.parseLong(req.getParameter("idContato"));
-            String nome = req.getParameter("nome");
-            String telefone = req.getParameter("telefone");
+            if(erros.isEmpty()){
+                Long id = Long.parseLong(req.getParameter("idContato"));
+                String nome = req.getParameter("nome");
+                String telefone = req.getParameter("telefone");
 
-            Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
-            Contato c = new Contato(id, nome, telefone);
+                Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
+                Contato c = new Contato(id, nome, telefone);
 
-            Optional<Contato> findContato = contatoDAO.findById(c.getId(), u.getId());
+                Optional<Contato> findContato = contatoDAO.findById(c.getId(), u.getId());
 
-            if(findContato.isPresent()){
-                if(contatoDAO.atualizar(c))
-                    return true;
+                if(findContato.isPresent()){
+                    if(contatoDAO.atualizar(c))
+                        return true;
 
-                req.getSession().setAttribute("error", "erro ao salvar contato");
-                return false;
+                    req.getSession().setAttribute("error", "erro ao salvar contato");
+                    return false;
+                }
             }
+            req.getSession().setAttribute("validationErrors", erros);
+            return false;
+        }catch(Exception e){
+            e.printStackTrace();
+            req.getSession().setAttribute("error", "erro ao salvar contato");
+            return false;
         }
-        req.getSession().setAttribute("validationErrors", erros);
-        return false;
     }
 
     public boolean deletar(HttpServletRequest request){
@@ -154,7 +156,7 @@ public class ContatoService {
         return false;
     }
 
-    private Map<String, List<String>> validar(HttpServletRequest req){
+    private Map<String, List<String>> validar(HttpServletRequest req, boolean validarArquivo) throws IOException, ServletException{
         Map<String, List<String>> erros = new HashMap<>();
 
         String nome = req.getParameter("nome");
@@ -165,6 +167,13 @@ public class ContatoService {
         }
         if(Validator.isEmptyOrNull(telefone)){
             erros.put("telefone",Arrays.asList("telefone inválido"));
+        }
+        if(validarArquivo){
+            String extensao = Validator.getFileExtension(getSubmittedFileName(req.getPart("foto")));
+
+            if(extensao == "" || (!extensao.equals(".png") && !extensao.equals(".jpg") && !extensao.equals(".jpeg"))){
+                erros.put("foto", Arrays.asList("arquivo inválido"));
+            }
         }
         
         return erros;
@@ -200,7 +209,7 @@ public class ContatoService {
             String chrs = "0123456789abcdefghijklmnopqrstuvwxyz-_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             SecureRandom secureRandom = SecureRandom.getInstanceStrong();
             customTag = secureRandom
-                .ints(12, 0, chrs.length()) // 12 is the length of the string you want
+                .ints(20, 0, chrs.length()) // 20 is the length of the string you want
                 .mapToObj(i -> chrs.charAt(i))
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
                 .toString();

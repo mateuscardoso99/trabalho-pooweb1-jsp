@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -7,18 +8,32 @@
         <%@ include file="/WEB-INF/components/menu.jsp" %>
 
         <div class="container">
-            <div class="row mb-3">
-                <div class="col-3">
-                    <a class="btn btn-danger" href="${pageContext.request.contextPath}/user/contato/show">contatos</a>
-                </div>
-            </div>
             <div class="row">
-                <div class="col-3">
-                    <a class="btn btn-danger" href="${pageContext.request.contextPath}/user/link/show">links</a>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem; cursor: pointer;" onclick="redirect('${pageContext.request.contextPath}/user/contato/show')">
+                        <div class="card-header">Contatos</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Contatos</h5>
+                            <p class="card-text">Cadastro de contatos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem; cursor: pointer;" onclick="redirect('${pageContext.request.contextPath}/user/link/show')">
+                        <div class="card-header">Links</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Links</h5>
+                            <p class="card-text">Cadastro de páginas web favoritas</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <%@ include file="/WEB-INF/components/footer.jsp" %>
+        <script>
+            const redirect = (url) => window.location.href = url
+        </script>
     </body>
 </html>

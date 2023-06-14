@@ -76,12 +76,16 @@ public class UsuarioService {
         if (errors.isEmpty()) {
             Usuario usuarioLogado = BuscarUsuarioLogado.getUsuarioLogado(req);
             usuarioUpdate.setId(usuarioLogado.getId());
+            usuarioUpdate.setContatos(usuarioLogado.getContatos());
+            usuarioUpdate.setLinks(usuarioLogado.getLinks());
 
             if(!Validator.isEmptyOrNull(usuarioUpdate.getSenha()))
                 usuarioUpdate.setSenha(new BCryptPasswordEncoder().encode(usuarioUpdate.getSenha()));
 
-            if(usuarioDAO.atualizar(usuarioUpdate))
+            if(usuarioDAO.atualizar(usuarioUpdate)){
+                req.getSession().setAttribute("usuario", usuarioUpdate);//atualiza dados do usuario na sessão
                 return true;
+            }
             
             req.getSession().setAttribute("error","erro ao atualizar perfil");
             return false;
