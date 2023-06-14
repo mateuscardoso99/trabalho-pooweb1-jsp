@@ -9,6 +9,7 @@ public class Usuario {
     private String senha;
     private Collection<Contato> contatos;
     private Collection<Link> links;
+    private Collection<Documento> documentos;
 
     public Usuario(){}
 
@@ -76,6 +77,14 @@ public class Usuario {
 
     public void setLinks(Collection<Link> links) {
         this.links = links;
+    }
+
+    public Collection<Documento> getDocumentos() {
+        return documentos;
+    }
+
+    public void setDocumentos(Collection<Documento> documentos) {
+        this.documentos = documentos;
     }
     
 }

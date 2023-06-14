@@ -28,6 +28,16 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem; cursor: pointer;" onclick="redirect('${pageContext.request.contextPath}/user/docs/show')">
+                        <div class="card-header">Documentos</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Documentos</h5>
+                            <p class="card-text">Salvar documentos</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
