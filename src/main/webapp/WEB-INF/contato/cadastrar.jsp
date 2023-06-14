@@ -52,6 +52,13 @@
                     <div class="mb-3">
                         <label for="foto" class="form-label">Foto</label>
                         <input type="file" class="form-control" name="foto" id="foto">
+                        <c:if test="${not empty requestScope.validationErrors}">
+                            <c:forEach items="${requestScope.validationErrors.foto}" var="error">
+                                <span class="text-danger">
+                                    ${error}
+                                </span>
+                            </c:forEach>
+                        </c:if>
                     </div>
                     <c:set var="validationErrors" scope="request" value=""></c:set>
                     <button type="submit" name="action" class="btn btn-success" value="cadastrar">Salvar contato</button>

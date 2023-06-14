@@ -21,4 +21,9 @@ public class Validator {
             return false;
         }
     }
+    public static String getFileExtension(String filename){
+        int ponto = filename.lastIndexOf(".");
+        if(ponto == -1) return "";
+        return filename.substring(ponto);
+    }
 }

@@ -52,6 +52,13 @@ public class ContatoService {
                 //upload foto
                 if(req.getPart("foto").getSize() > 0){
                     Part file = req.getPart("foto");
+                    String extensao = Validator.getFileExtension(getSubmittedFileName(file));
+
+                    if(extensao == "" || (!extensao.equals(".png") && !extensao.equals(".jpg") && !extensao.equals(".jpeg"))){
+                        erros.put("foto", Arrays.asList("arquivo inválido"));
+                        req.setAttribute("validationErrors", erros);
+                        return false;
+                    }
 
                     String uploadPath = req.getServletContext().getRealPath("") + File.separator + PropertiesLoad.loadProperties().getProperty("fotos_folder");
                     File uploadDir = new File(uploadPath);
