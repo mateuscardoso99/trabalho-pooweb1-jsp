@@ -2,8 +2,6 @@ package service;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -30,14 +27,6 @@ import utils.Validator;
 public class DocumentoService {
     private static final String PATH = PropertiesLoad.loadProperties().getProperty("docs_folder");
     private DocumentoDAO documentoDAO = new DocumentoDAO();
-    private static final String[] extensoes = {
-        ".htm",".html",".txt",".pdf",".rtf",".doc",
-        ".docx",".xls",".xlsx",".ppt",".pptx",".jpe",
-        ".jpeg", ".jpg",".bmp",".gif",".jfif",".png",
-        ".pnz",".svg",".svgz",".tif",".tiff",
-        ".mp4",".webm",".mp3",".wav"
-    };
-
 
     public List<Documento> findAll(HttpServletRequest req){
         Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
@@ -79,7 +68,7 @@ public class DocumentoService {
                 if(!uploadDir.exists())
                     uploadDir.mkdir();
 
-                String hashFileName = generateHashFilename();
+                String hashFileName = FileUtils.generateHashFilename();
                 String fileName = hashFileName + FileUtils.getSubmittedFileName(file); 
 
                 file.write(uploadPath + File.separator + fileName);
@@ -141,7 +130,6 @@ public class DocumentoService {
     public Optional<String> verificarDocumentoPertenceAoUsuario(HttpServletRequest req){
         Usuario usuarioLogado = BuscarUsuarioLogado.getUsuarioLogado(req);
         Collection<String> docsUsuario = usuarioLogado.getDocumentos().stream().map(doc -> doc.getArquivo()).collect(Collectors.toList());
-        System.out.println(docsUsuario.size());
         Optional<String> documento = docsUsuario.stream().filter(f -> f != null).filter(f -> f.equals(req.getParameter("name"))).findFirst();
         return documento;
     }
@@ -151,7 +139,7 @@ public class DocumentoService {
         Map<String, List<String>> erros = new HashMap<>();
         String extensao = Validator.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("arquivo")));
 
-        if(extensao == "" || !Arrays.asList(extensoes).contains(extensao)){
+        if(extensao == ""){
             erros.put("arquivo", Arrays.asList("arquivo inválido"));
         }
         
@@ -170,22 +158,5 @@ public class DocumentoService {
             erros.add("id inválido");
         }
         return erros;
-    }
-
-    private String generateHashFilename(){
-        String customTag = String.valueOf(new Random().nextInt(15));
-        try{
-            String chrs = "0123456789abcdefghijklmnopqrstuvwxyz-_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            SecureRandom secureRandom = SecureRandom.getInstanceStrong();
-            customTag = secureRandom
-                .ints(20, 0, chrs.length()) // 20 is the length of the string you want
-                .mapToObj(i -> chrs.charAt(i))
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString();
-
-        }catch(NoSuchAlgorithmException ex){
-            ex.printStackTrace();
-        }
-        return customTag;
     }
 }

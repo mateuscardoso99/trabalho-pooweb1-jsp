@@ -1,6 +1,7 @@
 package dao;
 
 import model.Contato;
+import model.Documento;
 import model.Link;
 import model.Usuario;
 import utils.Validator;
@@ -142,12 +143,14 @@ public class UsuarioDAO {
 
     public Usuario getDadosUsuario(Usuario u){
         sql = new StringBuilder();
-        sql.append("SELECT c.id AS cid, c.*, l.id AS lid, l.* FROM contato c JOIN usuario u on c.id_usuario = u.id JOIN link l on u.id = l.id_usuario WHERE u.id = ?");
+        
+        sql.append("SELECT * FROM contato c JOIN usuario u on c.id_usuario = u.id WHERE u.id = ?");
 
         try(Connection conn = new ConectaDB().getConnection2()){
 
             List<Contato> contatosUsuario = new ArrayList<>();
             List<Link> linksUsuario = new ArrayList<>();
+            List<Documento> documentosUsuario = new ArrayList<>();
 
             PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
             ps.setLong(1, u.getId());
@@ -155,29 +158,69 @@ public class UsuarioDAO {
 
             while(resultSet.next()){
                 Contato c = new Contato(
-                    resultSet.getLong("cid"), 
+                    resultSet.getLong("id"), 
                     resultSet.getString("telefone"),
                     resultSet.getString("nome"), 
                     resultSet.getString("foto"),
                     resultSet.getLong("id_usuario")
                 );
+                contatosUsuario.add(c);
+            }
+
+            sql.setLength(0);
+            sql.append("SELECT * FROM link l JOIN usuario u on l.id_usuario = u.id WHERE u.id = ?");
+            ps = ConectaDB.getConnection().prepareStatement(sql.toString());
+            ps.setLong(1, u.getId());
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
                 Link l = new Link(
-                    resultSet.getLong("lid"), 
+                    resultSet.getLong("id"), 
                     resultSet.getString("url"),
                     resultSet.getString("descricao"),
                     resultSet.getLong("id_usuario")
                 );
-                contatosUsuario.add(c);
                 linksUsuario.add(l);
+            }
+
+            sql.setLength(0);
+            sql.append("SELECT * FROM documento doc JOIN usuario u on doc.id_usuario = u.id WHERE u.id = ?");
+            ps = ConectaDB.getConnection().prepareStatement(sql.toString());
+            ps.setLong(1, u.getId());
+            resultSet = ps.executeQuery();
+
+            while(resultSet.next()){
+                Documento doc = new Documento(
+                    resultSet.getLong("id"),
+                    resultSet.getString("arquivo"),
+                    resultSet.getLong("id_usuario")
+                );
+                documentosUsuario.add(doc);
             }
 
             u.setContatos(contatosUsuario);
             u.setLinks(linksUsuario);
+            u.setDocumentos(documentosUsuario);
             
         }catch(SQLException e){
             e.printStackTrace();
         }
 
         return u;
+    }
+
+    public void atualizarCaminhoDocs(String path, Long idUsuario, Long idDoc){
+        sql = new StringBuilder();
+        sql.append("UPDATE documento SET arquivo = ? WHERE id_usuario = ? AND id = ?");
+
+        try(Connection conn = new ConectaDB().getConnection2()){
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, path);
+            ps.setLong(2, idUsuario);
+            ps.setLong(3, idDoc);
+            ps.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 }

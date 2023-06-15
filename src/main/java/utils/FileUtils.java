@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -48,5 +51,22 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    public static String generateHashFilename(){
+        String customTag = String.valueOf(new Random().nextInt(15));
+        try{
+            String chrs = "0123456789abcdefghijklmnopqrstuvwxyz-_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            SecureRandom secureRandom = SecureRandom.getInstanceStrong();
+            customTag = secureRandom
+                .ints(20, 0, chrs.length()) // 20 is the length of the string you want
+                .mapToObj(i -> chrs.charAt(i))
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+
+        }catch(NoSuchAlgorithmException ex){
+            ex.printStackTrace();
+        }
+        return customTag;
     }
 }
