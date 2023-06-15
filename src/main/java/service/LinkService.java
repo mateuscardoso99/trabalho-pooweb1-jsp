@@ -78,6 +78,9 @@ public class LinkService {
                 req.getSession().setAttribute("error", "erro ao salvar link");
                 return false;
             }
+
+            req.getSession().setAttribute("error", "link não encontrado");
+            return false;
         }
         req.getSession().setAttribute("validationErrors", erros);
         return false;

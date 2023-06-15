@@ -60,7 +60,7 @@ public class ContatoDAO {
             e.printStackTrace();
         }
 
-        return Optional.of(contato);
+        return Optional.ofNullable(contato);
     }
 
     public boolean salvar(Contato contato){

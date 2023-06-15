@@ -36,7 +36,7 @@ public class UsuarioDAO {
 
         preparedStatement.close();
 
-        return Optional.of(usuario);
+        return Optional.ofNullable(usuario);
     }
 
     public Optional<Usuario> findByEmail(String email){

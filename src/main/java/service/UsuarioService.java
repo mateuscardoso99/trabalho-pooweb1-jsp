@@ -13,12 +13,14 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import config.PropertiesLoad;
 import dao.UsuarioDAO;
 import model.Usuario;
 import utils.BuscarUsuarioLogado;
 import utils.Validator;
 
 public class UsuarioService {
+    private static final String PATH = PropertiesLoad.loadProperties().getProperty("fotos_folder");
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     public boolean autenticar(Usuario u, HttpServletRequest req){
@@ -104,7 +106,7 @@ public class UsuarioService {
             String relativePath = req.getServletContext().getRealPath("");
 
             usuarioLogado.getContatos().stream().forEach(c -> {
-                File f = new File(relativePath+"/fotos_contato/"+c.getFoto());
+                File f = new File(relativePath + File.separator + PATH + File.separator + c.getFoto());
                 f.delete();
             });
 

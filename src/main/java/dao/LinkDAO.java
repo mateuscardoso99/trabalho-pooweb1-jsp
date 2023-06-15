@@ -58,7 +58,7 @@ public class LinkDAO {
             e.printStackTrace();
         }
 
-        return Optional.of(link);
+        return Optional.ofNullable(link);
     }
 
     public boolean salvar(Link link){

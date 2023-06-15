@@ -7,11 +7,13 @@ import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +24,11 @@ import dao.ContatoDAO;
 import model.Contato;
 import model.Usuario;
 import utils.BuscarUsuarioLogado;
+import utils.FileUtils;
 import utils.Validator;
 
 public class ContatoService {
+    private static final String PATH = PropertiesLoad.loadProperties().getProperty("fotos_folder");
     private ContatoDAO contatoDAO = new ContatoDAO();
 
     public List<Contato> findAll(HttpServletRequest req){
@@ -56,13 +60,13 @@ public class ContatoService {
                 if(req.getPart("foto").getSize() > 0){
                     Part file = req.getPart("foto");
 
-                    String uploadPath = req.getServletContext().getRealPath("") + File.separator + PropertiesLoad.loadProperties().getProperty("fotos_folder");
+                    String uploadPath = req.getServletContext().getRealPath("") + File.separator + PATH;
                     File uploadDir = new File(uploadPath);
 
                     String hashFileName = generateHashFilename();
-                    String fileName = hashFileName + getSubmittedFileName(file); 
+                    String fileName = hashFileName + FileUtils.getSubmittedFileName(file); 
 
-                    //cria diretorio
+                    //cria diretorio se não existe
                     if(!uploadDir.exists())
                         uploadDir.mkdir();
 
@@ -140,7 +144,7 @@ public class ContatoService {
             if(c.isPresent()){
                 String relativePath = request.getServletContext().getRealPath("");
                 
-                File file = new File(relativePath+"/fotos_contato/"+c.get().getFoto());
+                File file = new File(relativePath + File.separator + PATH + File.separator + c.get().getFoto());
                 file.delete();
 
                 if(contatoDAO.deletar(Long.valueOf(id)))
@@ -149,12 +153,23 @@ public class ContatoService {
                 request.getSession().setAttribute("error", "erro ao apagar o contato");
                 return false;                
             }
+
+            request.getSession().setAttribute("error", "contato não encontrado");
             return false;
         }
 
         request.getSession().setAttribute("validationErrors", erros);
         return false;
     }
+
+
+    public Optional<String> verificarFotoPertenceAoUsuario(HttpServletRequest req){
+        Usuario usuarioLogado = BuscarUsuarioLogado.getUsuarioLogado(req);
+        Collection<String> fotosUsuario = usuarioLogado.getContatos().stream().map(c -> c.getFoto()).collect(Collectors.toList());
+        Optional<String> foto = fotosUsuario.stream().filter(f -> f != null).filter(f -> f.equals(req.getParameter("name"))).findFirst();
+        return foto;
+    }
+
 
     private Map<String, List<String>> validar(HttpServletRequest req, boolean validarArquivo) throws IOException, ServletException{
         Map<String, List<String>> erros = new HashMap<>();
@@ -169,7 +184,7 @@ public class ContatoService {
             erros.put("telefone",Arrays.asList("telefone inválido"));
         }
         if(validarArquivo){
-            String extensao = Validator.getFileExtension(getSubmittedFileName(req.getPart("foto")));
+            String extensao = Validator.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("foto")));
 
             if(extensao == "" || (!extensao.equals(".png") && !extensao.equals(".jpg") && !extensao.equals(".jpeg"))){
                 erros.put("foto", Arrays.asList("arquivo inválido"));
@@ -191,16 +206,6 @@ public class ContatoService {
             erros.add("id inválido");
         }
         return erros;
-    }
-
-    private static String getSubmittedFileName(Part part) {
-        for (String cd : part.getHeader("content-disposition").split(";")) {
-            if (cd.trim().startsWith("filename")) {
-                String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-                return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1); // MSIE fix.
-            }
-        }
-        return null;
     }
 
     private String generateHashFilename(){

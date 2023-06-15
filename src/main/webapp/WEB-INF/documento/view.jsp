@@ -40,16 +40,18 @@
 
             <div class="row m-3">
               <div class="col text-center">
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalAddArquivo">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddArquivo">
                     novo arquivo
                 </button>
               </div>
             </div>
 
-            <div class="row mb-3">
+            <div class="row">
                 <c:forEach items="${documentos}" var="doc">
-                  <div class="col-md-6 text-center mb-3">
-                    <iframe loading="lazy" title="preview" src="${pageContext.request.contextPath}${doc.arquivo}" width="100%" height="200"></iframe>
+                  <div class="col-md-6 text-left mt-5 mb-5">
+                    <iframe loading="lazy" title="preview" src="${pageContext.request.contextPath}/docs?name=${doc.arquivo}" width="100%" height="250"></iframe>
+                    <a class="btn btn-danger" href="${pageContext.request.contextPath}/user/docs/file?idDoc=${doc.id}&action=apagar">Apagar</a>
+                    <a class="btn btn-success" href="${pageContext.request.contextPath}/user/docs/file?name=${doc.arquivo}&action=baixar">Baixar</a>
                   </div>
                 </c:forEach>
             </div>

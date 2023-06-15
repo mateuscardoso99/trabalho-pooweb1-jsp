@@ -56,7 +56,7 @@ public class DocumentoDAO {
             e.printStackTrace();
         }
 
-        return Optional.of(documento);
+        return Optional.ofNullable(documento);
     }
 
     public boolean salvar(Documento documento){

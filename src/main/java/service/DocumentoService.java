@@ -7,10 +7,13 @@ import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +24,20 @@ import dao.DocumentoDAO;
 import model.Documento;
 import model.Usuario;
 import utils.BuscarUsuarioLogado;
+import utils.FileUtils;
 import utils.Validator;
 
 public class DocumentoService {
+    private static final String PATH = PropertiesLoad.loadProperties().getProperty("docs_folder");
     private DocumentoDAO documentoDAO = new DocumentoDAO();
+    private static final String[] extensoes = {
+        ".htm",".html",".txt",".pdf",".rtf",".doc",
+        ".docx",".xls",".xlsx",".ppt",".pptx",".jpe",
+        ".jpeg", ".jpg",".bmp",".gif",".jfif",".png",
+        ".pnz",".svg",".svgz",".tif",".tiff",
+        ".mp4",".webm",".mp3",".wav"
+    };
+
 
     public List<Documento> findAll(HttpServletRequest req){
         Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
@@ -50,15 +63,15 @@ public class DocumentoService {
                 //upload foto
                 Part file = req.getPart("arquivo");
 
-                String uploadPath = req.getServletContext().getRealPath("") + File.separator + PropertiesLoad.loadProperties().getProperty("docs_folder");
-                
+                String uploadPath = req.getServletContext().getRealPath("") + File.separator + PATH;
+
                 File folder = new File(uploadPath);
 
                 //cria pasta docs
                 if(!folder.exists())
                     folder.mkdir();
 
-                uploadPath += File.separator + u.getNome() + "_" + u.getId();
+                uploadPath += File.separator + u.getNome().replace(" ", "-") + "_" + u.getId();
 
                 File uploadDir = new File(uploadPath);
 
@@ -67,11 +80,11 @@ public class DocumentoService {
                     uploadDir.mkdir();
 
                 String hashFileName = generateHashFilename();
-                String fileName = hashFileName + getSubmittedFileName(file); 
+                String fileName = hashFileName + FileUtils.getSubmittedFileName(file); 
 
                 file.write(uploadPath + File.separator + fileName);
 
-                documento.setArquivo("/docs/"+u.getNome()+"_"+u.getId()+"/"+fileName);
+                documento.setArquivo(File.separator + PATH + File.separator + u.getNome().replace(" ", "-") + "_" + u.getId() + File.separator + fileName);
 
                 if(documentoDAO.salvar(documento))
                     return true;
@@ -89,88 +102,56 @@ public class DocumentoService {
         }
     }
 
-    // public boolean atualizar(HttpServletRequest req){
-    //     try{
-    //         Map<String, List<String>> erros = validar(req,false);
+    public boolean deletar(HttpServletRequest request){
+        Map<String, List<String>> erros = new HashMap<>();
 
-    //         List<String> errosId = validateId(req);
+        List<String> errosId = validateId(request);
 
-    //         if(!errosId.isEmpty())
-    //             erros.put("id", errosId);
+        if(!errosId.isEmpty())
+            erros.put("id", errosId);
 
-    //         if(erros.isEmpty()){
-    //             Long id = Long.parseLong(req.getParameter("idContato"));
-    //             String nome = req.getParameter("nome");
-    //             String telefone = req.getParameter("telefone");
+        if(erros.isEmpty()){
+            Long id = Long.valueOf(request.getParameter("idDoc"));
 
-    //             Usuario u = BuscarUsuarioLogado.getUsuarioLogado(req);
-    //             Contato c = new Contato(id, nome, telefone);
+            Usuario u = BuscarUsuarioLogado.getUsuarioLogado(request);
+            Optional<Documento> doc = documentoDAO.findById(id, u.getId());
 
-    //             Optional<Contato> findContato = contatoDAO.findById(c.getId(), u.getId());
-
-    //             if(findContato.isPresent()){
-    //                 if(contatoDAO.atualizar(c))
-    //                     return true;
-
-    //                 req.getSession().setAttribute("error", "erro ao salvar contato");
-    //                 return false;
-    //             }
-    //         }
-    //         req.getSession().setAttribute("validationErrors", erros);
-    //         return false;
-    //     }catch(Exception e){
-    //         e.printStackTrace();
-    //         req.getSession().setAttribute("error", "erro ao salvar contato");
-    //         return false;
-    //     }
-    // }
-
-    // public boolean deletar(HttpServletRequest request){
-    //     Map<String, List<String>> erros = new HashMap<>();
-
-    //     List<String> errosId = validateId(request);
-
-    //     if(!errosId.isEmpty())
-    //         erros.put("id", errosId);
-
-    //     if(erros.isEmpty()){
-    //         Long id = Long.valueOf(request.getParameter("idContato"));
-
-    //         Usuario u = BuscarUsuarioLogado.getUsuarioLogado(request);
-    //         Optional<Contato> c = contatoDAO.findById(id, u.getId());
-
-    //         if(c.isPresent()){
-    //             String relativePath = request.getServletContext().getRealPath("");
+            if(doc.isPresent()){
+                String relativePath = request.getServletContext().getRealPath("");
                 
-    //             File file = new File(relativePath+"/fotos_contato/"+c.get().getFoto());
-    //             file.delete();
+                File file = new File(relativePath + doc.get().getArquivo());
+                file.delete();
 
-    //             if(contatoDAO.deletar(Long.valueOf(id)))
-    //                 return true;
+                if(documentoDAO.deletar(Long.valueOf(id)))
+                    return true;
 
-    //             request.getSession().setAttribute("error", "erro ao apagar o contato");
-    //             return false;                
-    //         }
-    //         return false;
-    //     }
+                request.getSession().setAttribute("error", "erro ao apagar o documento");
+                return false;                
+            }
 
-    //     request.getSession().setAttribute("validationErrors", erros);
-    //     return false;
-    // }
+            request.getSession().setAttribute("error", "documento não encontrado");
+            return false;
+        }
+
+        request.getSession().setAttribute("validationErrors", erros);
+        return false;
+    }
+
+
+    public Optional<String> verificarDocumentoPertenceAoUsuario(HttpServletRequest req){
+        Usuario usuarioLogado = BuscarUsuarioLogado.getUsuarioLogado(req);
+        Collection<String> docsUsuario = usuarioLogado.getDocumentos().stream().map(doc -> doc.getArquivo()).collect(Collectors.toList());
+        System.out.println(docsUsuario.size());
+        Optional<String> documento = docsUsuario.stream().filter(f -> f != null).filter(f -> f.equals(req.getParameter("name"))).findFirst();
+        return documento;
+    }
+
 
     private Map<String, List<String>> validar(HttpServletRequest req) throws IOException, ServletException{
         Map<String, List<String>> erros = new HashMap<>();
-        String extensao = Validator.getFileExtension(getSubmittedFileName(req.getPart("arquivo")));
+        String extensao = Validator.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("arquivo")));
 
-        if(extensao == "" || 
-            (!extensao.equals(".png") 
-                && !extensao.equals(".jpg") 
-                && !extensao.equals(".jpeg")
-                && !extensao.equals(".pdf")
-                && !extensao.equals(".txt")
-                && !extensao.equals(".doc")
-                && !extensao.equals(".docx")
-            )){
+        if(extensao == "" || !Arrays.asList(extensoes).contains(extensao)){
             erros.put("arquivo", Arrays.asList("arquivo inválido"));
         }
         
@@ -189,16 +170,6 @@ public class DocumentoService {
             erros.add("id inválido");
         }
         return erros;
-    }
-
-    private static String getSubmittedFileName(Part part) {
-        for (String cd : part.getHeader("content-disposition").split(";")) {
-            if (cd.trim().startsWith("filename")) {
-                String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-                return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1); // MSIE fix.
-            }
-        }
-        return null;
     }
 
     private String generateHashFilename(){
