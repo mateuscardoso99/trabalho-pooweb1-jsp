@@ -26,6 +26,9 @@ import utils.Validator;
 
 public class ContatoService {
     private static final String PATH = PropertiesLoad.loadProperties().getProperty("fotos_folder");
+    private static final String[] EXTENSOES = {
+        ".jpe",".jpeg",".jpg",".png",".svg",".webp",".gif"
+    };
     private ContatoDAO contatoDAO = new ContatoDAO();
 
     public List<Contato> findAll(HttpServletRequest req){
@@ -181,9 +184,9 @@ public class ContatoService {
             erros.put("telefone",Arrays.asList("telefone inválido"));
         }
         if(validarArquivo){
-            String extensao = Validator.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("foto")));
+            String extensao = FileUtils.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("foto")));
 
-            if(extensao == "" || (!extensao.equals(".png") && !extensao.equals(".jpg") && !extensao.equals(".jpeg"))){
+            if(extensao == "" || !Arrays.asList(EXTENSOES).contains(extensao)){
                 erros.put("foto", Arrays.asList("arquivo inválido"));
             }
         }

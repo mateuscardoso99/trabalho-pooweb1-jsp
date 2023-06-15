@@ -34,7 +34,7 @@
                         <input type="text" name="url" id="url" class="form-control">
                         <c:if test="${not empty requestScope.validationErrors}">
                             <c:forEach items="${requestScope.validationErrors.url}" var="error">
-                                <span class="text-danger">
+                                <span class="text-danger d-block">
                                     ${error}
                                 </span>
                             </c:forEach>
@@ -45,9 +45,7 @@
                         <textarea name="descricao" class="form-control" id="descricao" cols="10" rows="10"></textarea>
                         <c:if test="${not empty requestScope.validationErrors}">
                             <c:forEach items="${requestScope.validationErrors.descricao}" var="error">
-                                <span class="text-danger">
-                                    ${error}
-                                </span>
+                                <span class="text-danger">${error}</span>
                             </c:forEach>
                         </c:if>
                     </div>

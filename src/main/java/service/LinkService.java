@@ -116,6 +116,7 @@ public class LinkService {
 
     private Map<String, List<String>> validar(HttpServletRequest req){
         Map<String, List<String>> erros = new HashMap<>();
+        List<String> errosUrl = new ArrayList<>();
 
         String url = req.getParameter("url");
         String descricao = req.getParameter("descricao");
@@ -124,7 +125,12 @@ public class LinkService {
             erros.put("descricao",Arrays.asList("descrição inválida"));
         }
         if(Validator.isEmptyOrNull(url)){
-            erros.put("url",Arrays.asList("URL inválida"));
+            errosUrl.add("campo URL vazio");
+            erros.put("url", errosUrl);
+        }
+        if(!Validator.isValidURL(url)){
+            errosUrl.add("URL inválida");
+            erros.put("url", errosUrl);
         }
         
         return erros;

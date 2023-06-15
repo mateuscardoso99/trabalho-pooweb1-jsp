@@ -26,6 +26,9 @@ import utils.Validator;
 
 public class DocumentoService {
     private static final String PATH = PropertiesLoad.loadProperties().getProperty("docs_folder");
+    private static final String[] EXTENSOES = {
+        ".pdf",".txt",".html",".jpe",".jpeg",".jpg",".png",".svg",".webp",".gif",".js",".php",".java",".c",".cpp",".py"
+    };
     private DocumentoDAO documentoDAO = new DocumentoDAO();
 
     public List<Documento> findAll(HttpServletRequest req){
@@ -78,15 +81,15 @@ public class DocumentoService {
                 if(documentoDAO.salvar(documento))
                     return true;
                 
-                req.setAttribute("error", "erro ao salvar documento");
+                req.getSession().setAttribute("error", "erro ao salvar documento");
                 return false;
             }
 
-            req.setAttribute("validationErrors", erros);
+            req.getSession().setAttribute("validationErrors", erros);
             return false;
         }catch(Exception ex){
             ex.printStackTrace();
-            req.setAttribute("error", "erro ao salvar documento");
+            req.getSession().setAttribute("error", "erro ao salvar documento");
             return false;
         }
     }
@@ -137,10 +140,10 @@ public class DocumentoService {
 
     private Map<String, List<String>> validar(HttpServletRequest req) throws IOException, ServletException{
         Map<String, List<String>> erros = new HashMap<>();
-        String extensao = Validator.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("arquivo")));
+        String extensao = FileUtils.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("arquivo")));
 
-        if(extensao == ""){
-            erros.put("arquivo", Arrays.asList("arquivo inválido"));
+        if(extensao == "" || !Arrays.asList(EXTENSOES).contains(extensao)){
+            erros.put("arquivo", Arrays.asList("tipo de arquivo não permitido"));
         }
         
         return erros;

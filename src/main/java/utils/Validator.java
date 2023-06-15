@@ -1,5 +1,8 @@
 package utils;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 public class Validator {
@@ -21,9 +24,18 @@ public class Validator {
             return false;
         }
     }
-    public static String getFileExtension(String filename){
-        int ponto = filename.lastIndexOf(".");
-        if(ponto == -1) return "";
-        return filename.substring(ponto);
+    public static boolean isValidURL(String url){
+        try{
+            new URL(url).toURI();
+            return true;
+        }
+        catch(MalformedURLException e){
+            e.printStackTrace();
+            return false;
+        }
+        catch(URISyntaxException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }

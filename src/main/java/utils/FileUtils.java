@@ -69,4 +69,10 @@ public class FileUtils {
         }
         return customTag;
     }
+
+    public static String getFileExtension(String filename){
+        int ponto = filename.lastIndexOf(".");
+        if(ponto == -1) return "";
+        return filename.substring(ponto);
+    }
 }

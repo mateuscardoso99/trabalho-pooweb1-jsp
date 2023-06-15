@@ -1,10 +1,10 @@
 package teste;
 
-import dao.UsuarioDAO;
-import model.Usuario;
+// import dao.UsuarioDAO;
+// import model.Usuario;
 
 import java.sql.SQLException;
-import java.util.Collection;
+//import java.util.Collection;
 
 public class UsuarioTeste {
     public static void main(String[] args) throws SQLException {

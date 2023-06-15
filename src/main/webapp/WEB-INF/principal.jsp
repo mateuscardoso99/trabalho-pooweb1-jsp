@@ -9,7 +9,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card text-white bg-danger mb-3" style="max-width: 18rem; cursor: pointer;" onclick="redirect('${pageContext.request.contextPath}/user/contato/show')">
                         <div class="card-header">Contatos</div>
                         <div class="card-body">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card text-white bg-danger mb-3" style="max-width: 18rem; cursor: pointer;" onclick="redirect('${pageContext.request.contextPath}/user/link/show')">
                         <div class="card-header">Links</div>
                         <div class="card-body">
@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card text-white bg-danger mb-3" style="max-width: 18rem; cursor: pointer;" onclick="redirect('${pageContext.request.contextPath}/user/docs/show')">
                         <div class="card-header">Documentos</div>
                         <div class="card-body">
