@@ -9,12 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import config.PropertiesLoad;
 import service.DocumentoService;
 import utils.FileUtils;
 
 @WebServlet("/docs/*")
 public class ViewDocumentoController extends HttpServlet{
-
+    private static final String PATH = PropertiesLoad.loadProperties().getProperty("docs_folder");
     private DocumentoService documentoService = new DocumentoService();
 
     //verifica se a foto é realmente do usuário logado
@@ -26,7 +27,7 @@ public class ViewDocumentoController extends HttpServlet{
         }
 
         //ServletContext é o objeto criado pelo Servlet Container para compartilhar parâmetros iniciais ou informações de configuração para todo o aplicativo.
-        String relativePath = req.getServletContext().getRealPath("") + File.separator + req.getParameter("name");
+        String relativePath = req.getServletContext().getRealPath("") + File.separator + PATH + File.separator + req.getParameter("name");
         
         //busca mime type do arquivo
         String mimeType = getServletContext().getMimeType(relativePath);

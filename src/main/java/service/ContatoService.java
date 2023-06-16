@@ -117,6 +117,9 @@ public class ContatoService {
                     req.getSession().setAttribute("error", "erro ao salvar contato");
                     return false;
                 }
+
+                req.getSession().setAttribute("error", "contato não encontrado");
+                return false;
             }
             req.getSession().setAttribute("validationErrors", erros);
             return false;
@@ -147,7 +150,7 @@ public class ContatoService {
                 File file = new File(relativePath + File.separator + PATH + File.separator + c.get().getFoto());
                 file.delete();
 
-                if(contatoDAO.deletar(Long.valueOf(id)))
+                if(contatoDAO.deletar(id))
                     return true;
 
                 request.getSession().setAttribute("error", "erro ao apagar o contato");
@@ -186,7 +189,7 @@ public class ContatoService {
         if(validarArquivo){
             String extensao = FileUtils.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("foto")));
 
-            if(extensao == "" || !Arrays.asList(EXTENSOES).contains(extensao)){
+            if(extensao.equals("") || !Arrays.asList(EXTENSOES).contains(extensao)){
                 erros.put("foto", Arrays.asList("arquivo inválido"));
             }
         }

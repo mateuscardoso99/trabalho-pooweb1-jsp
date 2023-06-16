@@ -99,25 +99,4 @@ public class DocumentoDAO {
             return Boolean.FALSE;
         }
     }
-
-    public boolean atualizar(Documento documento){
-        try{
-            sql = new StringBuilder();
-            sql.append("UPDATE documento SET arquivo = ? WHERE id = ?;");
-
-            PreparedStatement ps = ConectaDB.getConnection().prepareStatement(sql.toString());
-            ps.setString(1, documento.getArquivo());
-            ps.setLong(2, documento.getId());
-            int result = ps.executeUpdate();
-            ps.close();
-
-            if (result == 0)
-                return Boolean.FALSE;
-
-            return Boolean.TRUE;
-        }catch(SQLException e){
-            e.printStackTrace();
-            return Boolean.FALSE;
-        }
-    }
 }

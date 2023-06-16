@@ -101,12 +101,13 @@ public class LinkService {
             Optional<Link> link = linkDAO.findById(id, u.getId());
 
             if(link.isPresent()){
-                if(linkDAO.deletar(Long.valueOf(id)))
+                if(linkDAO.deletar(id))
                     return true;
 
                 request.getSession().setAttribute("error", "erro ao apagar o link");
                 return false;                
             }
+            request.getSession().setAttribute("error", "link não encontrado");
             return false;
         }
 

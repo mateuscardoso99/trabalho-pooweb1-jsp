@@ -52,7 +52,7 @@ public class DocumentoService {
                 Documento documento = new Documento();
                 documento.setIdUsuario(u.getId());
 
-                //upload foto
+                //upload documento
                 Part file = req.getPart("arquivo");
 
                 String uploadPath = req.getServletContext().getRealPath("") + File.separator + PATH;
@@ -63,20 +63,12 @@ public class DocumentoService {
                 if(!folder.exists())
                     folder.mkdir();
 
-                uploadPath += File.separator + u.getNome().replace(" ", "-") + "_" + u.getId();
-
-                File uploadDir = new File(uploadPath);
-
-                //cria pasta do usuário dentro da pasta docs
-                if(!uploadDir.exists())
-                    uploadDir.mkdir();
-
                 String hashFileName = FileUtils.generateHashFilename();
                 String fileName = hashFileName + FileUtils.getSubmittedFileName(file); 
 
                 file.write(uploadPath + File.separator + fileName);
 
-                documento.setArquivo(File.separator + PATH + File.separator + u.getNome().replace(" ", "-") + "_" + u.getId() + File.separator + fileName);
+                documento.setArquivo(fileName);
 
                 if(documentoDAO.salvar(documento))
                     return true;
@@ -109,12 +101,12 @@ public class DocumentoService {
             Optional<Documento> doc = documentoDAO.findById(id, u.getId());
 
             if(doc.isPresent()){
-                String relativePath = request.getServletContext().getRealPath("");
+                String relativePath = request.getServletContext().getRealPath("") + File.separator + PATH + File.separator;
                 
                 File file = new File(relativePath + doc.get().getArquivo());
                 file.delete();
 
-                if(documentoDAO.deletar(Long.valueOf(id)))
+                if(documentoDAO.deletar(id))
                     return true;
 
                 request.getSession().setAttribute("error", "erro ao apagar o documento");
@@ -142,7 +134,7 @@ public class DocumentoService {
         Map<String, List<String>> erros = new HashMap<>();
         String extensao = FileUtils.getFileExtension(FileUtils.getSubmittedFileName(req.getPart("arquivo")));
 
-        if(extensao == "" || !Arrays.asList(EXTENSOES).contains(extensao)){
+        if(extensao.equals("") || !Arrays.asList(EXTENSOES).contains(extensao)){
             erros.put("arquivo", Arrays.asList("tipo de arquivo não permitido"));
         }
         
